@@ -1,0 +1,31 @@
+{
+  "name": "table",
+  "version": "0.0.1",
+  "description": "Simple command line table formatter",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "test": "tape './test/**/*.js' | tap-difflet"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@gittrevor:cli/lib/table"
+  },
+  "keywords": [
+    "cli",
+    "table",
+    "library"
+  ],
+  "author": "Trevor Cowley",
+  "license": "ISC",
+  "dependencies": {
+  },
+  "devDependencies": {
+    "blue-tape": "^0.1.10",
+    "glob": "^5.0.14",
+    "tap-difflet": "^0.3.0",
+    "tap-min": "^1.0.0",
+    "tape": "^4.0.3",
+    "tape-catch": "^1.0.4"
+  }
+}
