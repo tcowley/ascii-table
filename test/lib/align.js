@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-var table = require('../../lib/table.js');
+var table = require('../../index.js');
 
 //var str = 'one two three four five six seven eight ninetynine onhundred';
 var str = 'one two three four'; 

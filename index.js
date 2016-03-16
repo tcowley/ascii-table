@@ -1,3 +1,7 @@
+/**
+ * Module dependencies
+ */
+    
 var table = module.exports = {};
 var os = require('os');
 var spaces = (new Array(process.stdout.columns)).join(' ');

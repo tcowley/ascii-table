@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
-// TODO: 
-// - this script should be finished as a commander app that accepts piped input :)
+// CLI version of table-formatter
+// - finish this as a commander app that accepts piped input :)
 
-var tf = module.exports = require('./lib/table');
+// var tf = require('./index.js');
 
+console.log("table-formatter CLI app is TBD");

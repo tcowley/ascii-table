@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-var table = require('../../lib/table.js');
+var table = require('../../index.js');
 
 var output = table.formatTable(
     generateColumns(),
