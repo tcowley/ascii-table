@@ -245,3 +245,26 @@ table.render = function(config) {
 // Methods
 // --------------------------------------------------------------------------------
 
+// table formatter workflow:
+
+// - normalizeConfig()
+//   - outerWidth: N || screen columns (default)
+//   - columnWidths: N || [w,w,w,...]  (outerWidth / max num of columns found)
+//   - cellPadding: 0,1,2  (1)
+//   - cellBorder: F | ' ' | '-'  ('-')
+//   - tableBorder: F | ' ' | '-'  ('-')
+//   - tableMargin: N || X,Y || X,Y,Z || X,Y,Z,K  (0)
+// - normalizeData()
+//   - generate 2-D array of lines (rows of columns)
+// - split lines: stringSplit()
+// - make cell arrays same length
+// - string pad cell array lines
+// - join cell lines together with inner borders and padding
+// - wrap cell lines with table border and margins
+// - add top and bottom margin rows (whitespace)
+// - combine rows into a single string
+// - return string
+
+
+
+
