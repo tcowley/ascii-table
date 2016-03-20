@@ -1,6 +1,2 @@
-
-var asciiTable = require('lib/ascii-table.js');
-
-module.exports = asciiTable.asciiTable;
-
+module.exports = require('./lib/ascii-table.js').asciiTable;
 
