@@ -1,9 +1,9 @@
 {
-  "name": "table",
+  "name": "asci-table",
   "version": "0.0.1",
-  "description": "Simple command line table formatter",
+  "description": "Format a set of rows into an ascii-style table",
   "bin": {
-    "table-formatter": "cli.js"
+    "ascii-table": "cli.js"
   },
   "main": "index.js",
   "private": true,
@@ -12,11 +12,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://gittrevor:cli/table-formatter"
+    "url": "git+ssh://gittrevor:cli/ascii-table"
   },
   "keywords": [
     "cli",
-    "table",
+    "ascii",
     "table",
     "library"
   ],
