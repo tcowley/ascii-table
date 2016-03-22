@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+return;
 var table = require('../../index.js');
 
 var output = table.formatTable(

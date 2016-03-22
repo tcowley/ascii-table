@@ -23,7 +23,7 @@
   "author": "Trevor Cowley",
   "license": "ISC",
   "dependencies": {
-    "string-pad": "git+ssh://gittrevor:cli/lib/string-pad",
+    "string-split": "git+ssh://gittrevor:cli/lib/string-split",
     "string-align": "git+ssh://gittrevor:cli/lib/string-align"
   },
   "devDependencies": {
