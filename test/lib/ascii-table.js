@@ -17,7 +17,7 @@ test('test validateRow(row)', function (t) {
 test('test validateRows(rows)', function (t) {
 
     t.throws(function() { at.validateRows(''); } , "rows is not an array");
-    t.doesNotThrow(function() { at.validateRows([]); } , "rows is an empty array");
+    t.throws(function() { at.validateRows([]); } , "rows is an empty array");
     t.throws(function() { at.validateRows([{},[]]); } , "rows contains both arrays and objects");
     t.doesNotThrow(function() { at.validateRows([{}, {}]); } , "rows contains only objects");
     t.doesNotThrow(function() { at.validateRows([[], []]); } , "rows contains only arrays");
@@ -44,10 +44,6 @@ test('test getRowWithMostFields(row)', function (t) {
     var a;
     var b;
     
-    a = [];
-    b = at.getRowWithMostFields(a);
-    t.equal(b, null, "rows is an empty array, returns null");
-    
     a = [
         ['', ''],
         ['', '', ''],
@@ -64,11 +60,63 @@ test('test getRowWithMostFields(row)', function (t) {
     ];
     
     b = at.getRowWithMostFields(a);
-    t.equal(b, a[1], "row is an array of object");
+    t.equal(b, a[1], "row is an array of objects");
     
     t.end();
 
 });
+
+test('test normalizeBorder(border)', function (t) {
+    var a;
+    ['', '-', ' '].forEach(function(border) {
+        a = at.normalizeBorder(border);
+        t.equal(a, border, "border is '" + border + "'");
+    });
+    a = at.normalizeBorder();
+    t.equal(a, '-', "default border is '-'");
+    t.end();
+});
+
+test('test normalizePadding(padding)', function (t) {
+    var a;
+    
+    a = at.normalizePadding();
+    t.equal(a, 1, "default padding is 1");
+    
+    a = at.normalizePadding(5);
+    t.equal(a, 5, "padding is a positive integer");
+    
+    a = at.normalizePadding('5');
+    t.equal(a, 5, "padding is a positive integer string");
+    
+    t.throws(function() { a = at.normalizePadding(5.1); }, "padding is a float");
+    t.throws(function() { a = at.normalizePadding(-5); }, "padding is a negative number");
+    t.throws(function() { a = at.normalizePadding('5x'); }, "padding is a garbage string");
+    
+    t.end();
+});
+
+test('test normalizeMargin(margin)', function (t) {
+    var a;
+
+    a = at.normalizeMargin();
+    t.equal(a, 1, "default margin is 1");
+
+    a = at.normalizeMargin(5);
+    t.equal(a, 5, "margin is a positive integer");
+
+    a = at.normalizeMargin('5');
+    t.equal(a, 5, "margin is a positive integer string");
+
+    t.throws(function() { a = at.normalizeMargin(5.1); }, "margin is a float");
+    t.throws(function() { a = at.normalizeMargin(-5); }, "margin is a negative number");
+    t.throws(function() { a = at.normalizeMargin('5x'); }, "margin is a garbage string");
+
+    t.end();
+});
+
+
+
 
 
 return;
