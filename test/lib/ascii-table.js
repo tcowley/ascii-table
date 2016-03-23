@@ -116,6 +116,51 @@ test('test normalizeMargin(margin)', function (t) {
 });
 
 
+test('test normalizeColumnsFromObject(columns, rows, totalWidth, borderWith, padding, margin)', function (t) {
+    // ---------------------------------------------------------
+    // core columns object tests
+    // ---------------------------------------------------------
+    
+    // columns is not an object
+    // columns is an empty object
+    // columns.width is a garbage value
+    // columns.width exists but is empty
+    // columns.alignment is a garbage value
+    // columns.alignment exists but is empty
+    // columns.alignment is a valid non-default value
+    // columns.alignment is the default value
+    
+    // ---------------------------------------------------------
+    // Array Rows tests
+    // ---------------------------------------------------------
+    
+    // columns array is length of longest array in rows
+    
+    // ---------------------------------------------------------
+    // Object Rows tests
+    // ---------------------------------------------------------
+
+    // all column names found in rows array of objects
+    
+    // ---------------------------------------------------------
+    // Common Tests
+    // ---------------------------------------------------------
+        
+    // each columns array value is a distinct object
+    // column.width is empty, and number of columns results in all-equal values for width
+    // column.width is empty, and number of columns results in last value being larger than other widths
+    // column.width is empty, and number of columns results in min-width columns (1 char)
+    // columns.width is non-empty, and will generate a table smaller than totalWidth
+    // columns.width is non-empty, and will generate a table larger than totalWidth
+    
+    t.end();
+});
+
+test('test normalizeColumnsFromArray(columns, rows, totalWidth, borderWith, padding, margin)', function (t) {
+    t.end();
+});
+
+
 
 
 
