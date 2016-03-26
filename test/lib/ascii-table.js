@@ -117,41 +117,98 @@ test('test normalizeMargin(margin)', function (t) {
 
 
 test('test normalizeColumnsFromObject(columns, rows, totalWidth, borderWith, padding, margin)', function (t) {
-    // ---------------------------------------------------------
-    // core columns object tests
-    // ---------------------------------------------------------
+    var a;
+    var b;
+    function getRows(n, type) {
+        var arr;
+        n = typeof n === 'undefined' ? 5000 : n;
+        switch (type) {
+        case 'object':
+            arr = [{a:'a0', b:'b0'}, {a:'a1', b: 'b1', c:'c1'}, {}];
+            break;
+        default:
+            arr = [ ['a0', 'b0'], ['a1', 'b1', 'c1'], [] ];
+        }
+        return arr.slice(0, n);
+    }
     
-    // columns is not an object
-    // columns is an empty object
-    // columns.width is a garbage value
-    // columns.width exists but is empty
-    // columns.alignment is a garbage value
-    // columns.alignment exists but is empty
-    // columns.alignment is a valid non-default value
-    // columns.alignment is the default value
+    test('> test core columns object', function (t) {
+        
+        t.throws(function() { at.normalizeColumnsFromObject(undefined, getRows()); }, "columns is undefined");
+        t.throws(function() { at.normalizeColumnsFromObject('asdf', getRows()); }, "columns is not an object");
+        
+        a = [
+            {name: 0, width: 1, alignment: 'left'}, 
+            {name: 1, width: 1, alignment: 'left'},
+            {name: 2, width: 1, alignment: 'left'} 
+        ];
+        b = at.normalizeColumnsFromObject({}, getRows()); 
+        t.deepEquals(b, a, "columns is an empty object");
+        
+        // columns.width is a garbage value
+        t.throws(function() { at.normalizeColumnsFromObject({width: 'asdf'}, getRows()); }, "columns.width is a garbage value");
+        
+        // columns.width is a percentage
+        b = at.normalizeColumnsFromObject({width: '0%'}, getRows(), 100)[0].width;
+        t.deepEquals(b, 1, "columns.width is a percentage: '0%'");
+        b = at.normalizeColumnsFromObject({width: '50%'}, getRows(), 100)[0].width;
+        t.deepEquals(b, 50, "columns.width is a percentage: '50%'");
+        b = at.normalizeColumnsFromObject({width: '100%'}, getRows(), 100)[0].width;
+        t.deepEquals(b, 100, "columns.width is a percentage: '100%'");
+        b = at.normalizeColumnsFromObject({width: '200%'}, getRows(), 100)[0].width;
+        t.deepEquals(b, 200, "columns.width is a percentage: '200%'");
+        
+        // columns.width is a number
+        b = at.normalizeColumnsFromObject({width: 0}, getRows(), 100)[0].width;
+        t.deepEquals(b, 1, "columns.width is a number: 0");
+        b = at.normalizeColumnsFromObject({width: 50}, getRows(), 100)[0].width;
+        t.deepEquals(b, 50, "columns.width is a number: 50");
+        b = at.normalizeColumnsFromObject({width: 200}, getRows(), 100)[0].width;
+        t.deepEquals(b, 200, "columns.width is a number: 200");
+       
+        
+        // columns.alignment 
+        t.throws(function() { at.normalizeColumnsFromObject({alignment: 55}, getRows()); }, "columns.alignment is a garbage value");
+        b = at.normalizeColumnsFromObject({alignment: 'right'}, getRows())[0].alignment;
+        t.deepEquals(b, 'right', "columns.alignment is a valid non-default value: 'right'");
+        b = at.normalizeColumnsFromObject({}, getRows())[0].alignment;
+        t.deepEquals(b, 'left', "columns.alignment is not supplied");
+        
+        t.end();
+    });
+    
+    
+    test('> tests specific to rows', function (t) {
+        b = at.normalizeColumnsFromObject({}, getRows());
+        t.notEqual(b[0], b[1], "each columns array value is a distinct object");
+        
+        // column.width is empty, and number of columns results in all-equal values for width
+        // column.width is empty, and number of columns results in last value being larger than other widths
+        // column.width is empty, and number of columns results in min-width columns (1 char)
+        // columns.width is non-empty, and will generate a table smaller than totalWidth
+        // columns.width is non-empty, and will generate a table larger than totalWidth
+        t.end();
+    });
     
     // ---------------------------------------------------------
     // Array Rows tests
     // ---------------------------------------------------------
     
-    // columns array is length of longest array in rows
+    test('> tests specific to rows that are arrays', function (t) {
+        // columns array is length of longest array in rows
+        t.end();
+    });
+    
     
     // ---------------------------------------------------------
     // Object Rows tests
     // ---------------------------------------------------------
 
-    // all column names found in rows array of objects
+    test('> tests specific to rows that are objects', function (t) {
+        // all column names found in rows array of objects
+        t.end();
+    });
     
-    // ---------------------------------------------------------
-    // Common Tests
-    // ---------------------------------------------------------
-        
-    // each columns array value is a distinct object
-    // column.width is empty, and number of columns results in all-equal values for width
-    // column.width is empty, and number of columns results in last value being larger than other widths
-    // column.width is empty, and number of columns results in min-width columns (1 char)
-    // columns.width is non-empty, and will generate a table smaller than totalWidth
-    // columns.width is non-empty, and will generate a table larger than totalWidth
     
     t.end();
 });
