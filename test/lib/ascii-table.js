@@ -115,24 +115,11 @@ test('test normalizeMargin(margin)', function (t) {
     t.end();
 });
 
-
 test('test normalizeColumnsFromObject(columns, rows, totalWidth, borderWith, padding, margin)', function (t) {
     var a;
     var b;
-    function getRows(n, type) {
-        var arr;
-        n = typeof n === 'undefined' ? 5000 : n;
-        switch (type) {
-        case 'object':
-            arr = [{a:'a0', b:'b0'}, {a:'a1', c:'c1', d: 'd1'}, {}];
-            break;
-        default:
-            arr = [ ['a0', 'b0'], ['a1', 'b1', 'c1'], [] ];
-        }
-        return arr.slice(0, n);
-    }
     
-    test('> test core columns object', function (t) {
+    t.test('> test core columns object', function (t) {
         
         t.throws(function() { at.normalizeColumnsFromObject(undefined, getRows()); }, "columns is undefined");
         t.throws(function() { at.normalizeColumnsFromObject('asdf', getRows()); }, "columns is not an object");
@@ -176,9 +163,8 @@ test('test normalizeColumnsFromObject(columns, rows, totalWidth, borderWith, pad
         
         t.end();
     });
-    
-    
-    test('> tests columns config specific to rows', function (t) {
+
+    t.test('> tests columns config specific to rows', function (t) {
         var b;
         
         b = at.normalizeColumnsFromObject({}, getRows());
@@ -196,11 +182,7 @@ test('test normalizeColumnsFromObject(columns, rows, totalWidth, borderWith, pad
         t.end();
     });
     
-    // ---------------------------------------------------------
-    // Array Rows tests
-    // ---------------------------------------------------------
-    
-    test('> test columns config specific to rows that are arrays', function (t) {
+    t.test('> test columns config specific to rows that are arrays', function (t) {
         var b;
         
         b = at.normalizeColumnsFromObject({}, getRows());
@@ -211,13 +193,8 @@ test('test normalizeColumnsFromObject(columns, rows, totalWidth, borderWith, pad
         
         t.end();
     });
-    
-    
-    // ---------------------------------------------------------
-    // Object Rows tests
-    // ---------------------------------------------------------
 
-    test('> test columns config specific to rows that are objects', function (t) {
+    t.test('> test columns config specific to rows that are objects', function (t) {
         // all column names found in rows array of objects
         var a = ['a', 'b', 'c', 'd'];
         var b;
@@ -228,98 +205,48 @@ test('test normalizeColumnsFromObject(columns, rows, totalWidth, borderWith, pad
         t.end();
     });
     
-    
     t.end();
 });
-
 
 test('test normalizeColumnsFromArray(columns, rows, totalWidth, borderWith, padding, margin)', function (t) {
+    var a;
+    var b;
+    
+    t.throws(function() { at.normalizeColumnsFromArray('sna', getRows()) }, "columns is not an array");
+    t.throws(function() { at.normalizeColumnsFromArray(['sna'], getRows()) }, "columns items are not all arrays");
+    
+    t.throws(function() { at.normalizeColumnsFromArray([{width: -5}], getRows()) }, "column.width is a negative integer");
+    t.throws(function() { at.normalizeColumnsFromArray([{width: 0}], getRows()) }, "column.width is 0");
+    t.throws(function() { at.normalizeColumnsFromArray([{width: 5.1}], getRows()) }, "column.width is not an integer");
+    t.doesNotThrow(function() { at.normalizeColumnsFromArray([{width: 5}], getRows()) }, "column.width is a positive integer");
+    
+    t.throws(function() { at.normalizeColumnsFromArray([{}], getRows(500, 'object')) }, "when rows are objects, columns must have a name");
+    
+    b = at.normalizeColumnsFromArray([{width: 100}, {},{}], getRows(), 200).map(function(obj) {return obj.width;});
+    t.equals(b[0], 100, "columns with widths do not have their width altered");
+    t.deepEqual([b[1],b[2]], [50, 50], "available width is split evenly among columns without widths");
     
     t.end();
 });
 
 
 
-
-
-return;
-
-
-
-
-
-var output = table.formatTable(
-    generateColumns(),
-    generateObjectRows(),
-    false, 
-    10
-);
-
-console.log(output);
-
-
 // --------------------------------------------------------------------------------
-// APP FUNCTIONS
+// MOCKS, STUBS and OTHER HELPERS
 // --------------------------------------------------------------------------------
 
-function generateColumns() {
-    var columns = [];
-    columns.push({name: 'one', width: 25, align:'justify'});
-    columns.push({name: 'two', width: 25,  align:'center'});
-    columns.push({name: 'three', width: 25, align:'justify'});
-    //columns.push({name: 'four', width: 25, align:'right'});
-    //columns.push({name: 'two'});
-    //columns.push('three');
-    //columns.push({name: 'four', width: 50});
-    return columns;
-}
 
-function generateObjectRows() {
-    var rows = [];
-    rows.push({
-        two: '1-2 a one   two',
-        one: '1-1 abcd efgh ij kl mnopqrstuvwxyz ABCD EFGHIJ KLM NO',
-        three: '1-3 adsf asdf',
-    });
 
-    rows.push({
-        two: '2-2 jalk',
-        three: '2-3 adsf asdf ljkljlk jlkj lkj lkj jj wekjlkj lkjad lkj',
-    });
 
-    rows.push({
-        one: '3-1 jljlk lkj lkj lakjl jl lkj lkjadfklj lkj lkja flkj',
-        three: '3-3 adsf asdf lkjad lkj',
-    });
-
-    rows.push({
-        one: '4-1 jljlk  ljsal jaslf jslfk jlklkj lkj lakjl jl lkj lkjadfklj lkj lkja flkj',
-        three: '4-3 adsf asdf lkjad lkj',
-    });
-    return rows;    
-}
-
-function generateArrayRows() {
-    var rows = [];
-    rows.push({
-        two: '1-2 a one   two',
-        one: '1-1 abcd efgh ij kl mnopqrstuvwxyz ABCD EFGHIJ KLM NO',
-        three: '1-3 adsf asdf',
-    });
-
-    rows.push({
-        two: '2-2 jalk',
-        three: '2-3 adsf asdf ljkljlk jlkj lkj lkj jj wekjlkj lkjad lkj',
-    });
-
-    rows.push({
-        one: '3-1 jljlk lkj lkj lakjl jl lkj lkjadfklj lkj lkja flkj',
-        three: '3-3 adsf asdf lkjad lkj',
-    });
-
-    rows.push({
-        one: '4-1 jljlk  ljsal jaslf jslfk jlklkj lkj lakjl jl lkj lkjadfklj lkj lkja flkj',
-        three: '4-3 adsf asdf lkjad lkj',
-    });
-    return rows;
+function getRows(n, type) {
+    var arr;
+    n = typeof n === 'undefined' ? 5000 : n;
+    switch (type) {
+    case 'object':
+        arr = [{a:'a0', b:'b0'}, {a:'a1', c:'c1', d: 'd1'}, {}];
+        break;
+    default:
+        arr = [ ['a0', 'b0'], ['a1', 'b1', 'c1'], [] ];
+    }
+    return arr.slice(0, n);
 }
