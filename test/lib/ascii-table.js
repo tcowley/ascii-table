@@ -30,11 +30,11 @@ test('test getRowLength(row)', function (t) {
     
     var a = ['', '', ''];
     var b = at.getRowLength(a);
-    t.equal(b, 3, "row is array");
+    t.equals(b, 3, "row is array");
     
     a = {a: '', b: '', c: ''};
     b = at.getRowLength(a);
-    t.equal(b, 3, "row is an object");
+    t.equals(b, 3, "row is an object");
     
     t.end();
     
@@ -51,7 +51,7 @@ test('test getRowWithMostFields(row)', function (t) {
     ];
     
     b = at.getRowWithMostFields(a);
-    t.equal(b, a[1], "rows is array of arrays");
+    t.equals(b, a[1], "rows is array of arrays");
 
     a = [
         {a: '', b: ''},
@@ -60,7 +60,7 @@ test('test getRowWithMostFields(row)', function (t) {
     ];
     
     b = at.getRowWithMostFields(a);
-    t.equal(b, a[1], "row is an array of objects");
+    t.equals(b, a[1], "row is an array of objects");
     
     t.end();
 
@@ -70,10 +70,10 @@ test('test normalizeBorder(border)', function (t) {
     var a;
     ['', '-', ' '].forEach(function(border) {
         a = at.normalizeBorder(border);
-        t.equal(a, border, "border is '" + border + "'");
+        t.equals(a, border, "border is '" + border + "'");
     });
     a = at.normalizeBorder();
-    t.equal(a, '-', "default border is '-'");
+    t.equals(a, '-', "default border is '-'");
     t.end();
 });
 
@@ -81,13 +81,13 @@ test('test normalizePadding(padding)', function (t) {
     var a;
     
     a = at.normalizePadding();
-    t.equal(a, 1, "default padding is 1");
+    t.equals(a, 1, "default padding is 1");
     
     a = at.normalizePadding(5);
-    t.equal(a, 5, "padding is a positive integer");
+    t.equals(a, 5, "padding is a positive integer");
     
     a = at.normalizePadding('5');
-    t.equal(a, 5, "padding is a positive integer string");
+    t.equals(a, 5, "padding is a positive integer string");
     
     t.throws(function() { a = at.normalizePadding(5.1); }, "padding is a float");
     t.throws(function() { a = at.normalizePadding(-5); }, "padding is a negative number");
@@ -100,13 +100,13 @@ test('test normalizeMargin(margin)', function (t) {
     var a;
 
     a = at.normalizeMargin();
-    t.equal(a, 1, "default margin is 1");
+    t.equals(a, 1, "default margin is 1");
 
     a = at.normalizeMargin(5);
-    t.equal(a, 5, "margin is a positive integer");
+    t.equals(a, 5, "margin is a positive integer");
 
     a = at.normalizeMargin('5');
-    t.equal(a, 5, "margin is a positive integer string");
+    t.equals(a, 5, "margin is a positive integer string");
 
     t.throws(function() { a = at.normalizeMargin(5.1); }, "margin is a float");
     t.throws(function() { a = at.normalizeMargin(-5); }, "margin is a negative number");
@@ -124,7 +124,7 @@ test('test normalizeColumnsFromObject(columns, rows, totalWidth, borderWith, pad
         n = typeof n === 'undefined' ? 5000 : n;
         switch (type) {
         case 'object':
-            arr = [{a:'a0', b:'b0'}, {a:'a1', b: 'b1', c:'c1'}, {}];
+            arr = [{a:'a0', b:'b0'}, {a:'a1', c:'c1', d: 'd1'}, {}];
             break;
         default:
             arr = [ ['a0', 'b0'], ['a1', 'b1', 'c1'], [] ];
@@ -150,21 +150,21 @@ test('test normalizeColumnsFromObject(columns, rows, totalWidth, borderWith, pad
         
         // columns.width is a percentage
         b = at.normalizeColumnsFromObject({width: '0%'}, getRows(), 100)[0].width;
-        t.deepEquals(b, 1, "columns.width is a percentage: '0%'");
+        t.equals(b, 1, "columns.width is a percentage: '0%'");
         b = at.normalizeColumnsFromObject({width: '50%'}, getRows(), 100)[0].width;
-        t.deepEquals(b, 50, "columns.width is a percentage: '50%'");
+        t.equals(b, 50, "columns.width is a percentage: '50%'");
         b = at.normalizeColumnsFromObject({width: '100%'}, getRows(), 100)[0].width;
-        t.deepEquals(b, 100, "columns.width is a percentage: '100%'");
+        t.equals(b, 100, "columns.width is a percentage: '100%'");
         b = at.normalizeColumnsFromObject({width: '200%'}, getRows(), 100)[0].width;
-        t.deepEquals(b, 200, "columns.width is a percentage: '200%'");
+        t.equals(b, 200, "columns.width is a percentage: '200%'");
         
         // columns.width is a number
         b = at.normalizeColumnsFromObject({width: 0}, getRows(), 100)[0].width;
-        t.deepEquals(b, 1, "columns.width is a number: 0");
+        t.equals(b, 1, "columns.width is a number: 0");
         b = at.normalizeColumnsFromObject({width: 50}, getRows(), 100)[0].width;
-        t.deepEquals(b, 50, "columns.width is a number: 50");
+        t.equals(b, 50, "columns.width is a number: 50");
         b = at.normalizeColumnsFromObject({width: 200}, getRows(), 100)[0].width;
-        t.deepEquals(b, 200, "columns.width is a number: 200");
+        t.equals(b, 200, "columns.width is a number: 200");
        
         
         // columns.alignment 
@@ -178,15 +178,21 @@ test('test normalizeColumnsFromObject(columns, rows, totalWidth, borderWith, pad
     });
     
     
-    test('> tests specific to rows', function (t) {
+    test('> tests columns config specific to rows', function (t) {
+        var b;
+        
         b = at.normalizeColumnsFromObject({}, getRows());
         t.notEqual(b[0], b[1], "each columns array value is a distinct object");
+
+        b = at.normalizeColumnsFromObject({}, getRows(), 2).map(function(obj) { return obj.width;})
+        t.deepEqual(b, [1,1,1], "column.width is empty, and large number of fields results in min-width columns (1 char)");
+
+        b = at.normalizeColumnsFromObject({width: 10}, getRows(), 300).map(function(obj) { return obj.width;})
+        t.deepEqual(b, [10,10,10], "column.width is non-empty, and will generate a table smaller than totalWidth");
         
-        // column.width is empty, and number of columns results in all-equal values for width
-        // column.width is empty, and number of columns results in last value being larger than other widths
-        // column.width is empty, and number of columns results in min-width columns (1 char)
-        // columns.width is non-empty, and will generate a table smaller than totalWidth
-        // columns.width is non-empty, and will generate a table larger than totalWidth
+        b = at.normalizeColumnsFromObject({width: 100}, getRows(), 100).map(function(obj) { return obj.width;})
+        t.deepEqual(b, [100,100,100], "column.width is non-empty, and will generate a table larger than totalWidth");
+        
         t.end();
     });
     
@@ -194,8 +200,15 @@ test('test normalizeColumnsFromObject(columns, rows, totalWidth, borderWith, pad
     // Array Rows tests
     // ---------------------------------------------------------
     
-    test('> tests specific to rows that are arrays', function (t) {
-        // columns array is length of longest array in rows
+    test('> test columns config specific to rows that are arrays', function (t) {
+        var b;
+        
+        b = at.normalizeColumnsFromObject({}, getRows());
+        t.equal(b.length, 3, "columns array is length of longest array in rows");
+        
+        b = b.map(function(obj) {return obj.name;});
+        t.deepEqual(b, [0,1,2], "column name values are ordinals: 0,1,2,...");
+        
         t.end();
     });
     
@@ -204,8 +217,14 @@ test('test normalizeColumnsFromObject(columns, rows, totalWidth, borderWith, pad
     // Object Rows tests
     // ---------------------------------------------------------
 
-    test('> tests specific to rows that are objects', function (t) {
+    test('> test columns config specific to rows that are objects', function (t) {
         // all column names found in rows array of objects
+        var a = ['a', 'b', 'c', 'd'];
+        var b;
+
+        b = at.normalizeColumnsFromObject({}, getRows(500, 'object')).map(function(obj) {return obj.name; });
+        t.deepEqual(b, a, "columns array contains all all field names found in rows");
+
         t.end();
     });
     
@@ -213,7 +232,9 @@ test('test normalizeColumnsFromObject(columns, rows, totalWidth, borderWith, pad
     t.end();
 });
 
+
 test('test normalizeColumnsFromArray(columns, rows, totalWidth, borderWith, padding, margin)', function (t) {
+    
     t.end();
 });
 
