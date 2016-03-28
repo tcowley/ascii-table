@@ -231,6 +231,32 @@ test('test normalizeColumnsFromArray(columns, rows, totalWidth, borderWith, padd
 
 
 
+test('test normalizeRows(columns, rows, skipValidateRows)', function (t) {
+    var a = [{name: 'a'}, {name:'b'}, {name: 'c'}, {name: 'd'}, {name:'e'}];
+    var b;
+    var c;
+    
+    // ROWS ARE ARRAYS
+    
+    b = at.normalizeRows(a.slice(0,1), getRows());
+    c = [['a0'], ['a1'], ['']];
+    t.deepEqual(b, c, "columns length is shorter than longest row");
+    
+    b = at.normalizeRows(a, getRows());
+    c = [['a0', 'b0', '', '', ''], ['a1', 'b1', 'c1', '', ''], ['', '', '','', '']];
+    t.deepEqual(b, c, "columns length is longer than longest row");
+    
+    // ROWS ARE OBJECTS
+    
+    b = at.normalizeRows(a.slice(3), getRows(500, 'object'));
+    c = [{d: '', e: ''}, {d: 'd1', e: ''}, {d: '', e: ''}];
+    t.deepEqual(b, c, "columns has a mix of field names, some not in any rows, some in some rows");
+    
+    
+    t.end();
+});
+
+
 // --------------------------------------------------------------------------------
 // MOCKS, STUBS and OTHER HELPERS
 // --------------------------------------------------------------------------------
