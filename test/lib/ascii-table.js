@@ -21,6 +21,17 @@ test('test validateRows(rows)', function (t) {
     t.throws(function() { at.validateRows([{},[]]); } , "rows contains both arrays and objects");
     t.doesNotThrow(function() { at.validateRows([{}, {}]); } , "rows contains only objects");
     t.doesNotThrow(function() { at.validateRows([[], []]); } , "rows contains only arrays");
+
+    t.end();
+
+});
+
+test('test validateColumns(columns)', function (t) {
+
+    t.throws(function() { at.validateColumns(''); } , "columns is not an array");
+    t.throws(function() { at.validateColumns([]); } , "columns is an empty array");
+    t.throws(function() { at.validateColumns([[], 5, {}]); } , "columns contains non-object values");
+    t.doesNotThrow(function() { at.validateColumns([{}, {}]); } , "columns contains only objects");
     
     t.end();
 
@@ -73,7 +84,7 @@ test('test normalizeBorder(border)', function (t) {
         t.equals(a, border, "border is '" + border + "'");
     });
     a = at.normalizeBorder();
-    t.equals(a, '-', "default border is '-'");
+    t.equals(a, '', "default border is ''");
     t.end();
 });
 
@@ -115,121 +126,99 @@ test('test normalizeMargin(margin)', function (t) {
     t.end();
 });
 
-test('test normalizeColumnsFromObject(columns, rows, totalWidth, borderWith, padding, margin)', function (t) {
+test('test normalizeColumnsFromObject(columns, rows)', function (t) {
     var a;
     var b;
+
+    // columns isn't an object
+    t.throws(function() { at.normalizeColumnsFromObject(undefined, getRows()); }, "columns is undefined");
+    t.throws(function() { at.normalizeColumnsFromObject('asdf', getRows()); }, "columns is not an object");
+
+    a = [
+        {name: 0, width: undefined, alignment: undefined},
+        {name: 1, width: undefined, alignment: undefined},
+        {name: 2, width: undefined, alignment: undefined}
+    ];
+    b = at.normalizeColumnsFromObject({}, getRows());
+    t.deepEquals(b, a, "columns is an empty object");
     
-    t.test('> test core columns object', function (t) {
-        
-        t.throws(function() { at.normalizeColumnsFromObject(undefined, getRows()); }, "columns is undefined");
-        t.throws(function() { at.normalizeColumnsFromObject('asdf', getRows()); }, "columns is not an object");
-        
-        a = [
-            {name: 0, width: 1, alignment: 'left'}, 
-            {name: 1, width: 1, alignment: 'left'},
-            {name: 2, width: 1, alignment: 'left'} 
-        ];
-        b = at.normalizeColumnsFromObject({}, getRows()); 
-        t.deepEquals(b, a, "columns is an empty object");
-        
-        // columns.width is a garbage value
-        t.throws(function() { at.normalizeColumnsFromObject({width: 'asdf'}, getRows()); }, "columns.width is a garbage value");
-        
-        // columns.width is a percentage
-        b = at.normalizeColumnsFromObject({width: '0%'}, getRows(), 100)[0].width;
-        t.equals(b, 1, "columns.width is a percentage: '0%'");
-        b = at.normalizeColumnsFromObject({width: '50%'}, getRows(), 100)[0].width;
-        t.equals(b, 50, "columns.width is a percentage: '50%'");
-        b = at.normalizeColumnsFromObject({width: '100%'}, getRows(), 100)[0].width;
-        t.equals(b, 100, "columns.width is a percentage: '100%'");
-        b = at.normalizeColumnsFromObject({width: '200%'}, getRows(), 100)[0].width;
-        t.equals(b, 200, "columns.width is a percentage: '200%'");
-        
-        // columns.width is a number
-        b = at.normalizeColumnsFromObject({width: 0}, getRows(), 100)[0].width;
-        t.equals(b, 1, "columns.width is a number: 0");
-        b = at.normalizeColumnsFromObject({width: 50}, getRows(), 100)[0].width;
-        t.equals(b, 50, "columns.width is a number: 50");
-        b = at.normalizeColumnsFromObject({width: 200}, getRows(), 100)[0].width;
-        t.equals(b, 200, "columns.width is a number: 200");
-       
-        
-        // columns.alignment 
-        t.throws(function() { at.normalizeColumnsFromObject({alignment: 55}, getRows()); }, "columns.alignment is a garbage value");
-        b = at.normalizeColumnsFromObject({alignment: 'right'}, getRows())[0].alignment;
-        t.deepEquals(b, 'right', "columns.alignment is a valid non-default value: 'right'");
-        b = at.normalizeColumnsFromObject({}, getRows())[0].alignment;
-        t.deepEquals(b, 'left', "columns.alignment is not supplied");
-        
-        t.end();
-    });
+    b = at.normalizeColumnsFromObject({}, getRows());
+    t.notEqual(b[0], b[1], "each columns array value is a distinct object");
 
-    t.test('> tests columns config specific to rows', function (t) {
-        var b;
-        
-        b = at.normalizeColumnsFromObject({}, getRows());
-        t.notEqual(b[0], b[1], "each columns array value is a distinct object");
+    // rows are arrays
+    b = at.normalizeColumnsFromObject({}, getRows());
+    t.equal(b.length, 3, "columns array is length of longest array in rows");
+    b = b.map(function(obj) {return obj.name;});
+    t.deepEqual(b, [0,1,2], "column name values are ordinals: 0,1,2,...");
 
-        b = at.normalizeColumnsFromObject({}, getRows(), 2).map(function(obj) { return obj.width;})
-        t.deepEqual(b, [1,1,1], "column.width is empty, and large number of fields results in min-width columns (1 char)");
+    // rows are objects
+    b = at.normalizeColumnsFromObject({}, getRows(500, 'object')).map(function(obj) {return obj.name; });
+    t.deepEqual(b, ['a', 'b', 'c', 'd'], "columns array contains all all field names found in rows");
 
-        b = at.normalizeColumnsFromObject({width: 10}, getRows(), 300).map(function(obj) { return obj.width;})
-        t.deepEqual(b, [10,10,10], "column.width is non-empty, and will generate a table smaller than totalWidth");
-        
-        b = at.normalizeColumnsFromObject({width: 100}, getRows(), 100).map(function(obj) { return obj.width;})
-        t.deepEqual(b, [100,100,100], "column.width is non-empty, and will generate a table larger than totalWidth");
-        
-        t.end();
-    });
-    
-    t.test('> test columns config specific to rows that are arrays', function (t) {
-        var b;
-        
-        b = at.normalizeColumnsFromObject({}, getRows());
-        t.equal(b.length, 3, "columns array is length of longest array in rows");
-        
-        b = b.map(function(obj) {return obj.name;});
-        t.deepEqual(b, [0,1,2], "column name values are ordinals: 0,1,2,...");
-        
-        t.end();
-    });
-
-    t.test('> test columns config specific to rows that are objects', function (t) {
-        // all column names found in rows array of objects
-        var a = ['a', 'b', 'c', 'd'];
-        var b;
-
-        b = at.normalizeColumnsFromObject({}, getRows(500, 'object')).map(function(obj) {return obj.name; });
-        t.deepEqual(b, a, "columns array contains all all field names found in rows");
-
-        t.end();
-    });
-    
     t.end();
 });
 
-test('test normalizeColumnsFromArray(columns, rows, totalWidth, borderWith, padding, margin)', function (t) {
+test('test normalizeColumnsFromArray(columns, rows, totalWidth, borderWith, padding)', function (t) {
     var a;
     var b;
+
+    // length params
+    t.throws(function() { at.normalizeColumnsFromArray([{name:0}], undefined, 1, 1, false) },
+        "totalWidth is not supplied");
+    t.throws(function() { at.normalizeColumnsFromArray([{name:0}], 100, undefined, 1, false) },
+        "borderWidth is not supplied");
+    t.throws(function() { at.normalizeColumnsFromArray([{name:0}], 100, 1, undefined, false) },
+        "padding is not supplied");
     
-    t.throws(function() { at.normalizeColumnsFromArray('sna', getRows()) }, "columns is not an array");
-    t.throws(function() { at.normalizeColumnsFromArray(['sna'], getRows()) }, "columns items are not all arrays");
+    // basic columns structure
+    t.throws(function() { at.normalizeColumnsFromArray('sna', 100, 1, 1, false) }, 
+        "columns is not an array");
+    t.throws(function() { at.normalizeColumnsFromArray(['sna'], 100, 1, 1, false) }, 
+        "columns elements are not all objects");
     
-    t.throws(function() { at.normalizeColumnsFromArray([{width: -5}], getRows()) }, "column.width is a negative integer");
-    t.throws(function() { at.normalizeColumnsFromArray([{width: 0}], getRows()) }, "column.width is 0");
-    t.throws(function() { at.normalizeColumnsFromArray([{width: 5.1}], getRows()) }, "column.width is not an integer");
-    t.doesNotThrow(function() { at.normalizeColumnsFromArray([{width: 5}], getRows()) }, "column.width is a positive integer");
+    // column names
+    t.throws(function() { at.normalizeColumnsFromArray([{name: 0},{}], 100, 1, 1, false) }, 
+        "column.name is undefined");
     
-    t.throws(function() { at.normalizeColumnsFromArray([{}], getRows(500, 'object')) }, "when rows are objects, columns must have a name");
+    // column alignment
+    b = at.normalizeColumnsFromArray([{name: 0}], 100, 1, 1, false);
+    t.equals(b[0].alignment, undefined, "column.alignment is undefined");
+    b = at.normalizeColumnsFromArray([{name: 0, alignment: 'justify'}], 100, 1, 1, false);
+    t.equals(b[0].alignment, 'justify', "column.alignment is legal value");
+    t.throws(function() { at.normalizeColumnsFromArray([{name: 0, alignment: 'foo'}], 1, 1, false) }, 
+        "column.alignment is garbage value");
+   
+    // columns with provided width values
     
-    b = at.normalizeColumnsFromArray([{width: 100}, {},{}], getRows(), 200).map(function(obj) {return obj.width;});
-    t.equals(b[0], 100, "columns with widths do not have their width altered");
-    t.deepEqual([b[1],b[2]], [50, 50], "available width is split evenly among columns without widths");
+    t.throws(function() { at.normalizeColumnsFromArray([{name: 0, width: 'foo'}], 1, 1, false) }, 
+        "column.width is a garbage value");
+
+    a = [
+        {name: 0, width: 10},
+        {name: 1, width: '50%'},
+        {name: 2, width: 1},
+        {name: 3, width: 10},
+    ];
+    b = at.normalizeColumnsFromArray(a, 100, 0, 1, false ).map(function(obj) {return obj.width;});
+    t.deepEqual(b[0], 10, "column.width is a whole number");
+    t.deepEqual(b[1], 50, "column.width is a whole number percentage");
+    t.deepEqual(b[2], 3, "column.width is too small");
+    t.deepEqual(b[3], 37, "column.width of last column is lengthened to fill table width");
+
+
+    // columns with no provided values
+    
+    a = [ {name: 0}, {name: 1}, {name: 2} ];
+    b = at.normalizeColumnsFromArray(a, 100, 0, 1, false ).map(function(obj) {return obj.width;});
+    t.deepEqual(b, [33, 33, 34], "available width is split evenly among columns without widths");
+
+    a = [ {name: 0, width: 100}, {name: 1}, {name: 2} ];
+    b = at.normalizeColumnsFromArray(a, 100, 0, 1, false ).map(function(obj) {return obj.width;});
+    t.deepEqual(b, [100, 3, 3], "available width is less than minimum column width");
     
     t.end();
+    
 });
-
-
 
 test('test normalizeRows(columns, rows, skipValidateRows)', function (t) {
     var a = [{name: 'a'}, {name:'b'}, {name: 'c'}, {name: 'd'}, {name:'e'}];
@@ -252,7 +241,6 @@ test('test normalizeRows(columns, rows, skipValidateRows)', function (t) {
     c = [{d: '', e: ''}, {d: 'd1', e: ''}, {d: '', e: ''}];
     t.deepEqual(b, c, "columns has a mix of field names, some not in any rows, some in some rows");
     
-    
     t.end();
 });
 
@@ -260,8 +248,6 @@ test('test normalizeRows(columns, rows, skipValidateRows)', function (t) {
 // --------------------------------------------------------------------------------
 // MOCKS, STUBS and OTHER HELPERS
 // --------------------------------------------------------------------------------
-
-
 
 
 function getRows(n, type) {
