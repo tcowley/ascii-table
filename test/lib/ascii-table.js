@@ -302,12 +302,20 @@ test('test generateTable(config)', function (t) {
     var c;
     
     a = at.normalizeConfig(getRows(), {}, '|', 0, 1);
-
     b = at.generateTable(a);
-    //console.log(b);
     c = ' +--+--+--+\n |a0|b0|  |\n +--+--+--+\n |a1|b1|c1|\n +--+--+--+\n |  |  |  |\n +--+--+--+';
-    t.deepEqual(b, c, "padding line with border = ' '");
-    
+    t.deepEqual(b, c, "margin = 1, padding = 0, border = '|'");
+
+    a = at.normalizeConfig(getRows(), {}, '|', 1, 1);
+    b = at.generateTable(a);
+    c = ' +----+----+----+\n |    |    |    |\n | a0 | b0 |    |\n |    |    |    |\n +----+----+----+\n |    |    |    |\n | a1 | b1 | c1 |\n |    |    |    |\n +----+----+----+\n |    |    |    |\n |    |    |    |\n |    |    |    |\n +----+----+----+';
+
+    t.deepEqual(b, c, "margin = 1, padding = 1, border = '|'");
+
+    a = at.normalizeConfig(getRows(), {}, '', 0, 0);
+    b = at.generateTable(a);
+    c = 'a0b0  \na1b1c1\n      ';
+    t.deepEqual(b, c, "margin = 0, padding = 0, border = ''");
 
     t.end();
 });
