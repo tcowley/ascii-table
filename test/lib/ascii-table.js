@@ -79,7 +79,8 @@ test('test getRowWithMostFields(row)', function (t) {
 
 test('test normalizeBorder(border)', function (t) {
     var a;
-    ['', '-', ' '].forEach(function(border) {
+    ['', '|', ' '].forEach(function(border) {
+        
         a = at.normalizeBorder(border);
         t.equals(a, border, "border is '" + border + "'");
     });
@@ -202,8 +203,8 @@ test('test normalizeColumnsFromArray(columns, rows, totalWidth, borderWith, padd
     b = at.normalizeColumnsFromArray(a, 100, 0, 1, false ).map(function(obj) {return obj.width;});
     t.deepEqual(b[0], 10, "column.width is a whole number");
     t.deepEqual(b[1], 50, "column.width is a whole number percentage");
-    t.deepEqual(b[2], 3, "column.width is too small");
-    t.deepEqual(b[3], 37, "column.width of last column is lengthened to fill table width");
+    t.deepEqual(b[2], 4, "column.width is too small");
+    t.deepEqual(b[3], 36, "column.width of last column is lengthened to fill table width");
 
 
     // columns with no provided values
@@ -214,7 +215,7 @@ test('test normalizeColumnsFromArray(columns, rows, totalWidth, borderWith, padd
 
     a = [ {name: 0, width: 100}, {name: 1}, {name: 2} ];
     b = at.normalizeColumnsFromArray(a, 100, 0, 1, false ).map(function(obj) {return obj.width;});
-    t.deepEqual(b, [100, 3, 3], "available width is less than minimum column width");
+    t.deepEqual(b, [100, 4, 4], "available width is less than minimum column width");
     
     t.end();
     
@@ -241,6 +242,73 @@ test('test normalizeRows(columns, rows, skipValidateRows)', function (t) {
     c = [{d: '', e: ''}, {d: 'd1', e: ''}, {d: '', e: ''}];
     t.deepEqual(b, c, "columns has a mix of field names, some not in any rows, some in some rows");
     
+    t.end();
+});
+
+test('test generateEdgeLine(config)', function (t) {
+    var a;
+    var b;
+    var c;
+
+    // BORDER IS ' ';
+
+    a = at.normalizeConfig(getRows(), {}, ' ', 1, 3);
+
+    b = at.generateEdgeLine(a, true);
+    c = '                   ';
+    //console.log('space, padding', b.length, c.length);
+    t.deepEqual(b, c, "padding line with border = ' '");
+
+    b = at.generateEdgeLine(a, false);
+    c = '                   ';
+    //console.log('space, border ', b, c);
+    t.deepEqual(b, c, "border line with border = ' '");
+
+    // BORDER IS '|';
+
+    a = at.normalizeConfig(getRows(), {}, '|', 1, 3);
+
+    b = at.generateEdgeLine(a, true);
+    c = '   |    |    |    |';
+    //console.log('pipe, padding ', b, c)
+    t.deepEqual(b, c, "padding line with border = '|'");
+
+    b = at.generateEdgeLine(a, false);
+    c = '   +----+----+----+';
+    //console.log('pipe, border  ', b, c);
+    t.deepEqual(b, c, "border line with border = '|'");
+
+    // BORDER IS '';
+
+    a = at.normalizeConfig(getRows(), {}, '', 1, 3);
+
+    b = at.generateEdgeLine(a, true);
+    c = '               ';
+    //console.log('pipe, padding ', b, c)
+    t.deepEqual(b, c, "padding line with border = ''");
+
+    b = at.generateEdgeLine(a, false);
+    c = '               ';
+    //console.log('pipe, border  ', b, c);
+    t.deepEqual(b, c, "border line with border = ''");
+
+
+    t.end();
+});
+
+test('test generateTable(config)', function (t) {
+    var a;
+    var b;
+    var c;
+    
+    a = at.normalizeConfig(getRows(), {}, '|', 0, 1);
+
+    b = at.generateTable(a);
+    //console.log(b);
+    c = ' +--+--+--+\n |a0|b0|  |\n +--+--+--+\n |a1|b1|c1|\n +--+--+--+\n |  |  |  |\n +--+--+--+';
+    t.deepEqual(b, c, "padding line with border = ' '");
+    
+
     t.end();
 });
 
