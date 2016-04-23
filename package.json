@@ -1,7 +1,7 @@
 {
   "name": "ascii-table",
   "version": "0.0.1",
-  "description": "Format a set of rows into an ascii-style table",
+  "description": "Format a set of ASCII data rows into a table.",
   "bin": {
     "ascii-table": "cli.js"
   },
@@ -12,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://gittrevor:cli/ascii-table"
+    "url": "https://github.com/tcowley/ascii-table"
   },
   "keywords": [
     "cli",
