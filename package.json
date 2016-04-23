@@ -1,5 +1,5 @@
 {
-  "name": "asci-table",
+  "name": "ascii-table",
   "version": "0.0.1",
   "description": "Format a set of rows into an ascii-style table",
   "bin": {
@@ -23,8 +23,8 @@
   "author": "Trevor Cowley",
   "license": "ISC",
   "dependencies": {
-    "string-split": "git+ssh://gittrevor:cli/lib/string-split",
-    "string-align": "git+ssh://gittrevor:cli/lib/string-align"
+    "ascii-string-split": "https://github.com/tcowley/ascii-string-split",
+    "ascii-string-align": "https://github.com/tcowley/ascii-string-align"
   },
   "devDependencies": {
     "blue-tape": "^0.1.10",
