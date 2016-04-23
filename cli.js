@@ -5,4 +5,4 @@
 
 // var tf = require('./index.js');
 
-console.log("table-formatter CLI app is TBD");
+console.log("ascii-table CLI app is TBD");
