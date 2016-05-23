@@ -252,7 +252,7 @@ test('test generateEdgeLine(config)', function (t) {
 
     // BORDER IS ' ';
 
-    a = at.normalizeConfig(getRows(), {}, ' ', 1, 3);
+    a = at.normalizeConfig( { rows: getRows(), columns: {}, border: ' ', padding: 1, margin: 3 } );
 
     b = at.generateEdgeLine(a, true);
     c = '                   ';
@@ -266,7 +266,7 @@ test('test generateEdgeLine(config)', function (t) {
 
     // BORDER IS '|';
 
-    a = at.normalizeConfig(getRows(), {}, '|', 1, 3);
+    a = at.normalizeConfig( { rows: getRows(), columns: {}, border: '|', padding: 1, margin: 3 } );
 
     b = at.generateEdgeLine(a, true);
     c = '   |    |    |    |';
@@ -280,7 +280,7 @@ test('test generateEdgeLine(config)', function (t) {
 
     // BORDER IS '';
 
-    a = at.normalizeConfig(getRows(), {}, '', 1, 3);
+    a = at.normalizeConfig( { rows: getRows(), columns: {}, border: '', padding: 1, margin: 3 } );
 
     b = at.generateEdgeLine(a, true);
     c = '               ';
@@ -301,18 +301,18 @@ test('test generateTable(config)', function (t) {
     var b;
     var c;
     
-    a = at.normalizeConfig(getRows(), {}, '|', 0, 1);
+    a = at.normalizeConfig( { rows: getRows(), columns: {}, border: '|', padding: 0, margin: 1 } );
     b = at.generateTable(a);
     c = ' +--+--+--+\n |a0|b0|  |\n +--+--+--+\n |a1|b1|c1|\n +--+--+--+\n |  |  |  |\n +--+--+--+';
     t.deepEqual(b, c, "margin = 1, padding = 0, border = '|'");
 
-    a = at.normalizeConfig(getRows(), {}, '|', 1, 1);
+    a = at.normalizeConfig( { rows: getRows(), columns: {}, border: '|', padding: 1, margin: 1 } );
     b = at.generateTable(a);
     c = ' +----+----+----+\n |    |    |    |\n | a0 | b0 |    |\n |    |    |    |\n +----+----+----+\n |    |    |    |\n | a1 | b1 | c1 |\n |    |    |    |\n +----+----+----+\n |    |    |    |\n |    |    |    |\n |    |    |    |\n +----+----+----+';
 
     t.deepEqual(b, c, "margin = 1, padding = 1, border = '|'");
 
-    a = at.normalizeConfig(getRows(), {}, '', 0, 0);
+    a = at.normalizeConfig( { rows: getRows(), columns: {}, border: '', padding: 0, margin: 0 } );
     b = at.generateTable(a);
     c = 'a0b0  \na1b1c1\n      ';
     t.deepEqual(b, c, "margin = 0, padding = 0, border = ''");
