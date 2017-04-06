@@ -1,6 +1,6 @@
 {
   "name": "ascii-table",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Format a set of ASCII data strings into a table.",
   "bin": {
     "ascii-table": "cli.js"
