@@ -1,6 +1,6 @@
 {
-  "name": "ascii-table",
-  "version": "0.0.1",
+  "name": "ascii-table2",
+  "version": "0.0.3",
   "description": "Format a set of ASCII data strings into a table.",
   "bin": {
     "ascii-table": "cli.js"
@@ -12,7 +12,7 @@
     "version": "",
     "postversion": "git push && git push --tags"
   },
-  "repository": "tcowley/ascii-table",
+  "repository": "tcowley/ascii-table2",
   "keywords": [
     "cli",
     "ascii",
