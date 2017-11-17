@@ -1,4 +1,4 @@
-# ascii-table2  ![Build Status](https://travis-ci.org/tcowley/ascii-table2.svg?branch=master)
+# ascii-table2 [![Build Status](https://travis-ci.org/tcowley/ascii-table2.svg?branch=master)](https://travis-ci.org/tcowley/ascii-table2)
 
 ## Description
 
